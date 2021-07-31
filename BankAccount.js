@@ -1,34 +1,67 @@
+class Transaction {
+  constructor(previousAmount, newAmount, type, date) {
+    this.previousAmount = previousAmount;
+    this.type = type;
+    this.newAmount = newAmount;
+    this.date = date;
+  }
+}
+
+class TransactionHistory {
+  constructor() {
+    this.transactions = [];
+  }
+
+  create({ previousAmount, newAmount, type, date }) {
+    this.transactions.push(
+      new Transaction(`$${previousAmount}`, `$${newAmount}`, type, date)
+    );
+  }
+
+  print() {
+    let dateStringTransactions = this.transactions.map((t) => {
+      return {
+        ...t,
+        date: t.date.toString(),
+      };
+    });
+    return console.log('TRANSACTION HISTORY:', dateStringTransactions);
+  }
+}
+
 class BankAccount {
   constructor(type, money = 0) {
     this.type = type;
     this.money = money;
-    this.transactionHistory = [];
+    this.transactionHistory = new TransactionHistory();
   }
 
   withdraw(amount) {
-    this.transactionHistory.push({
+    this.transactionHistory.create({
       date: new Date(),
       previousAmount: this.money,
+      type: 'withdraw',
       newAmount: (this.money -= amount),
     });
     this.money -= amount;
   }
 
   deposit(amount) {
-    this.transactionHistory.push({
+    this.transactionHistory.create({
       date: new Date(),
       previousAmount: this.money,
+      type: 'deposit',
       newAmount: (this.money += amount),
     });
     this.money += amount;
   }
 
   showBalance() {
-    console.log('BALANCE:', this.money);
+    console.log('BALANCE:', `$${this.money}`);
   }
 
   getTransactionHistory() {
-    console.log('TRANSACTION HISTORY:', this.transactionHistory);
+    this.transactionHistory.print();
   }
 }
 
